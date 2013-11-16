@@ -87,19 +87,6 @@ def runGame():
                 elif event.key == K_ESCAPE:
                     terminate()
 
-        # check if the worm has hit itself or the edge
-        if wormCoords[HEAD]['x'] == -1:
-            wormCoords[HEAD]['x'] = CELLWIDTH 
-        
-        if wormCoords[HEAD]['x'] == CELLWIDTH + 1:
-            wormCoords[HEAD]['x'] = 0
- 
-        if wormCoords[HEAD]['y'] == -1:
-            wormCoords[HEAD]['y'] = CELLHEIGHT
- 
-        if wormCoords[HEAD]['y'] == CELLHEIGHT + 1:
-            wormCoords[HEAD]['y'] = 0
-
         for wormBody in wormCoords[1:]:
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
                 return # game over
@@ -124,13 +111,13 @@ def runGame():
 
         # move the worm by adding a segment in the direction it is moving
         if direction == UP:
-            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] - 1}
+            newHead = {'x': wormCoords[HEAD]['x'], 'y': (wormCoords[HEAD]['y'] - 1) % CELLHEIGHT}
         elif direction == DOWN:
-            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] + 1}
+            newHead = {'x': wormCoords[HEAD]['x'], 'y': (wormCoords[HEAD]['y'] + 1) % CELLHEIGHT}
         elif direction == LEFT:
-            newHead = {'x': wormCoords[HEAD]['x'] - 1, 'y': wormCoords[HEAD]['y']}
+            newHead = {'x': (wormCoords[HEAD]['x'] - 1) % CELLWIDTH, 'y': wormCoords[HEAD]['y']}
         elif direction == RIGHT:
-            newHead = {'x': wormCoords[HEAD]['x'] + 1, 'y': wormCoords[HEAD]['y']}
+            newHead = {'x': (wormCoords[HEAD]['x'] + 1) % CELLWIDTH, 'y': wormCoords[HEAD]['y']}
         wormCoords.insert(0, newHead)
  	bgcolor = FLASHCOLOR if flash else BGCOLOR
         DISPLAYSURF.fill(bgcolor)
