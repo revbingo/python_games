@@ -26,6 +26,7 @@ DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
 BLUE      = (255, 155, 155)
 DARKBLUE  = (  0,   0, 155)
+FLASHCOLOR = (255, 255, 255)
 BGCOLOR = BLACK
 
 UP = 'up'
@@ -70,6 +71,7 @@ def runGame():
     altApple = False
     altWorm = False
     while True: # main game loop
+        flash = False
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
                 terminate()
@@ -105,6 +107,7 @@ def runGame():
         # check if worm has eaten an apply
         if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
             altWorm = altApple
+            flash = True
             # don't remove worm's tail segment
             apple = getRandomLocation() # set a new apple somewhere
             if random.randint(0,2) > 0:
@@ -128,7 +131,8 @@ def runGame():
         elif direction == RIGHT:
             newHead = {'x': wormCoords[HEAD]['x'] + 1, 'y': wormCoords[HEAD]['y']}
         wormCoords.insert(0, newHead)
-        DISPLAYSURF.fill(BGCOLOR)
+ 	bgcolor = FLASHCOLOR if flash else BGCOLOR
+        DISPLAYSURF.fill(bgcolor)
         drawGrid()
         drawWorm(wormCoords, altWorm)
         drawApple(apple, altApple)
