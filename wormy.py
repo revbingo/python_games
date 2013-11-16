@@ -24,6 +24,7 @@ RED       = (255,   0,   0)
 GREEN     = (  0, 255,   0)
 DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
+VERYDARKGRAY = (10, 10, 10)
 PINK      = (255, 155, 155)
 DARKBLUE  = (  0,   0, 155)
 FLASHCOLOR = (255, 255, 255)
@@ -38,6 +39,7 @@ HEAD = 0 # syntactic sugar: index of the worm's head
 
 NORM_COLOR = (GREEN, DARKGREEN)
 ALT_COLOR = (PINK, DARKBLUE)
+DIS_COLOR = (BLACK, VERYDARKGRAY)
 WORM_COLOR = NORM_COLOR
 
 def main():
@@ -69,7 +71,7 @@ def runGame():
 
     addingSegments = 0
     appleType = 0
-    altWorm = False
+    wormType = 0 
     while True: # main game loop
         flash = False
         for event in pygame.event.get(): # event handling loop
@@ -87,9 +89,10 @@ def runGame():
                 elif event.key == K_ESCAPE:
                     terminate()
 
-        for wormBody in wormCoords[1:]:
-            if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
-                return # game over
+        if not wormType == 1:
+            for wormBody in wormCoords[1:]:
+                if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
+                    return # game over
 
         # check if worm has eaten an apply
         if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
@@ -98,11 +101,11 @@ def runGame():
             else:
                 wormCoords = wormCoords[HEAD:len(wormCoords)/2]
                 
-            altWorm = (appleType == 1)
+            wormType = appleType
             flash = True
             # don't remove worm's tail segment
             apple = getRandomLocation() # set a new apple somewhere
-            appleType = random.randint(0,2)
+            appleType = random.randint(0,3)
         else:
             if addingSegments > 0:
                 addingSegments -= 1 
@@ -123,7 +126,7 @@ def runGame():
         DISPLAYSURF.fill(bgcolor)
         drawGrid()
         drawApple(apple, appleType)
-        drawWorm(wormCoords, altWorm)
+        drawWorm(wormCoords, wormType)
         drawScore(len(wormCoords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -221,22 +224,22 @@ def drawScore(score):
     DISPLAYSURF.blit(scoreSurf, scoreRect)
 
 
-def drawWorm(wormCoords, alt):
+def drawWorm(wormCoords, wormType):
     for coord in wormCoords:
         x = coord['x'] * CELLSIZE
         y = coord['y'] * CELLSIZE
         wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-        color = ALT_COLOR if alt else NORM_COLOR
-        pygame.draw.rect(DISPLAYSURF, color[0], wormSegmentRect)
+ 	colors = (NORM_COLOR, ALT_COLOR, NORM_COLOR, DIS_COLOR)
+        pygame.draw.rect(DISPLAYSURF, colors[wormType][0], wormSegmentRect)
         wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
-        pygame.draw.rect(DISPLAYSURF, color[1], wormInnerSegmentRect)
+        pygame.draw.rect(DISPLAYSURF, colors[wormType][1], wormInnerSegmentRect)
 
 
 def drawApple(coord, appleType):
     x = coord['x'] * CELLSIZE
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    colors = (RED, PINK, GREEN) 
+    colors = (RED, PINK, GREEN, DARKGRAY) 
     pygame.draw.rect(DISPLAYSURF, colors[appleType], appleRect)
 
 
