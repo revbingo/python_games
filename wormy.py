@@ -93,10 +93,10 @@ def runGame():
             wormCoords[HEAD]['x'] = -1
  
         if wormCoords[HEAD]['y'] == -1:
-            wormCoords[HEAD]['y'] == CELLHEIGHT
+            wormCoords[HEAD]['y'] = CELLHEIGHT
  
         if wormCoords[HEAD]['y'] == CELLHEIGHT + 1:
-            wormCoords[HEAD]['y'] == -1
+            wormCoords[HEAD]['y'] = -1
 
         for wormBody in wormCoords[1:]:
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
