@@ -234,18 +234,17 @@ def drawWorm(wormCoords, alt):
         x = coord['x'] * CELLSIZE
         y = coord['y'] * CELLSIZE
         wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-        outerColor = DARKBLUE if alt else DARKGREEN
-        pygame.draw.rect(DISPLAYSURF, outerColor, wormSegmentRect)
+        color = ALT_COLOR if alt else NORM_COLOR
+        pygame.draw.rect(DISPLAYSURF, color[0], wormSegmentRect)
         wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
-        innerColor = BLUE if alt else GREEN
-        pygame.draw.rect(DISPLAYSURF, innerColor, wormInnerSegmentRect)
+        pygame.draw.rect(DISPLAYSURF, color[1], wormInnerSegmentRect)
 
 
-def drawApple(coord, blue):
+def drawApple(coord, alt):
     x = coord['x'] * CELLSIZE
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    color = BLUE if blue else RED
+    color = BLUE if alt else RED
     pygame.draw.rect(DISPLAYSURF, color, appleRect)
 
 
