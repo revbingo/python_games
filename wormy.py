@@ -24,7 +24,7 @@ RED       = (255,   0,   0)
 GREEN     = (  0, 255,   0)
 DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
-BLUE      = (255, 155, 155)
+PINK      = (255, 155, 155)
 DARKBLUE  = (  0,   0, 155)
 FLASHCOLOR = (255, 255, 255)
 BGCOLOR = BLACK
@@ -37,7 +37,7 @@ RIGHT = 'right'
 HEAD = 0 # syntactic sugar: index of the worm's head
 
 NORM_COLOR = (GREEN, DARKGREEN)
-ALT_COLOR = (BLUE, DARKBLUE)
+ALT_COLOR = (PINK, DARKBLUE)
 WORM_COLOR = NORM_COLOR
 
 def main():
@@ -68,7 +68,7 @@ def runGame():
     apple = getRandomLocation()
 
     addingSegments = 0
-    altApple = False
+    appleType = 0
     altWorm = False
     while True: # main game loop
         flash = False
@@ -92,13 +92,13 @@ def runGame():
             wormCoords[HEAD]['x'] = CELLWIDTH 
         
         if wormCoords[HEAD]['x'] == CELLWIDTH + 1:
-            wormCoords[HEAD]['x'] = -1
+            wormCoords[HEAD]['x'] = 0
  
         if wormCoords[HEAD]['y'] == -1:
             wormCoords[HEAD]['y'] = CELLHEIGHT
  
         if wormCoords[HEAD]['y'] == CELLHEIGHT + 1:
-            wormCoords[HEAD]['y'] = -1
+            wormCoords[HEAD]['y'] = 0
 
         for wormBody in wormCoords[1:]:
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
@@ -106,15 +106,16 @@ def runGame():
 
         # check if worm has eaten an apply
         if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
-            altWorm = altApple
+            if appleType != 2:
+                addingSegments += 4
+            else:
+                wormCoords = wormCoords[HEAD:len(wormCoords)/2]
+                
+            altWorm = (appleType == 1)
             flash = True
             # don't remove worm's tail segment
             apple = getRandomLocation() # set a new apple somewhere
-            if random.randint(0,2) > 0:
-                altApple = True
-            else:
-                altApple = False 
-            addingSegments += 4
+            appleType = random.randint(0,2)
         else:
             if addingSegments > 0:
                 addingSegments -= 1 
@@ -134,8 +135,8 @@ def runGame():
  	bgcolor = FLASHCOLOR if flash else BGCOLOR
         DISPLAYSURF.fill(bgcolor)
         drawGrid()
+        drawApple(apple, appleType)
         drawWorm(wormCoords, altWorm)
-        drawApple(apple, altApple)
         drawScore(len(wormCoords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -244,12 +245,12 @@ def drawWorm(wormCoords, alt):
         pygame.draw.rect(DISPLAYSURF, color[1], wormInnerSegmentRect)
 
 
-def drawApple(coord, alt):
+def drawApple(coord, appleType):
     x = coord['x'] * CELLSIZE
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    color = BLUE if alt else RED
-    pygame.draw.rect(DISPLAYSURF, color, appleRect)
+    colors = (RED, PINK, GREEN) 
+    pygame.draw.rect(DISPLAYSURF, colors[appleType], appleRect)
 
 
 def drawGrid():
