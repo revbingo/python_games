@@ -8,7 +8,7 @@
 import random, pygame, sys
 from pygame.locals import *
 
-FPS = 5
+FPS = 7
 WINDOWWIDTH = 1280 
 WINDOWHEIGHT =  960
 CELLSIZE = 40
@@ -58,6 +58,7 @@ def main():
 
 
 def runGame():
+    score = 0
     # Set a random start point.
     startx = random.randint(5, CELLWIDTH - 6)
     starty = random.randint(5, CELLHEIGHT - 6)
@@ -100,6 +101,7 @@ def runGame():
                 addingSegments += 4
             else:
                 wormCoords = wormCoords[HEAD:len(wormCoords)/2]
+		score += 3
                 
             wormType = appleType
             flash = True
@@ -109,6 +111,7 @@ def runGame():
         else:
             if addingSegments > 0:
                 addingSegments -= 1 
+		score = score + 1
             else:
                 del wormCoords[-1] # remove worm's tail segment
 
@@ -127,7 +130,7 @@ def runGame():
         drawGrid()
         drawApple(apple, appleType)
         drawWorm(wormCoords, wormType)
-        drawScore(len(wormCoords) - 3)
+        drawScore(score)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
